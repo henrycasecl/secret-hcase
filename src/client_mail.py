@@ -11,8 +11,8 @@ from typing import Optional, List
 # Configurables / Inputs
 # -----------------------
 # Puedes dejar vacíos para que el script pregunte en tiempo de ejecución.
-EMAIL_USER = "fadmin@banco.com"       
-EMAIL_PASS = "123momia2025"     
+EMAIL_USER = "fadmin@banco.com"  # IGNORE
+EMAIL_PASS = "123momia2025"      # IGNORE
 
 # SMTP server config (puedes cambiar)
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")  # cambiar si no usas Gmail

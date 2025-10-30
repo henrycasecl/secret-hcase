@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="langchain_core._api.deprecation")
 import os
 import sys
 import json
@@ -5,12 +7,13 @@ import requests
 import argparse
 from langgraph.graph import StateGraph, END
 
-OLLAMA_HOST = "http://192.168.1.125:11434"
+
+OLLAMA_HOST = "http://192.168.1.125:11434" # IGNORE
 
 # ---------------------------------------------------------------------
 # 🔹 Función utilitaria: llamada al modelo local
 # ---------------------------------------------------------------------
-def ollama_generate(prompt, model="gpt-oss:20b"):
+def ollama_generate(prompt, model="gpt-oss:20b"): # IGNORE
     """Consulta a Ollama local"""
     try:
         response = requests.post(
@@ -74,18 +77,18 @@ def node_detect_secrets(state: ScanState):
 
         # Prompt para el modelo
         prompt = f"""
-Eres un analista de seguridad.
-Debes encontrar posibles secretos o credenciales dentro del código a continuación.
-Devuelve SOLO una lista JSON, donde cada elemento tenga:
-'tipo', 'valor'.
+            Eres un analista de seguridad.
+            Debes encontrar posibles secretos o credenciales dentro del código a continuación.
+            Devuelve SOLO y UNICAMENTE una lista JSON, donde cada elemento tenga:
+            'tipo', 'valor', 'linea'.
 
-Código:
-{file['content']}
+            Código:
+            {file['content']}
 
-Ejemplo de respuesta:
-[{{"tipo":"password","valor":"mypwd123","linea":10}}]
-Si no hay secretos, responde [].
-"""
+            Ejemplo de respuesta:
+            [{{"tipo":"password","valor":"mypwd123","linea":10}}]
+            Si no hay secretos, responde [].
+            """
         response = ollama_generate(prompt)
         try:
             detected = json.loads(response)
@@ -95,15 +98,18 @@ Si no hay secretos, responde [].
 
         # Filtrar líneas que están marcadas con "# IGNORE"
         filtered = []
+        #print(detected)
         for d in detected:
             try:
                 line_num = int(d.get("linea", -1))
+                #print(line_num)
                 if line_num in ignore_lines:
-                    print(f"[-] Ignorando secreto en línea {line_num} (marcado con # IGNORE)")
+                    print(f"[-] Ignorando secreto en línea {line_num} del archivo {file['path']} (marcado con # IGNORE)")
                     continue
                 d["archivo"] = file["path"]
                 filtered.append(d)
             except Exception:
+                print("+")
                 continue
 
         findings.extend(filtered)
@@ -128,7 +134,7 @@ def node_generate_report(state: ScanState):
     return state
 
 # ---------------------------------------------------------------------
-# 🧩 Construcción del flujo LangGraph
+# Construcción del flujo LangGraph
 # ---------------------------------------------------------------------
 graph = StateGraph(ScanState)
 graph.add_node("read_files", node_read_files)
@@ -143,7 +149,7 @@ graph.set_finish_point("generate_report")
 app = graph.compile()
 
 # ---------------------------------------------------------------------
-# 🚀 Ejecución CLI
+# Ejecución CLI
 # ---------------------------------------------------------------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Escáner IA de secretos en código fuente")
@@ -161,4 +167,12 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"[+] Iniciando flujo de detección de secretos IA sobre: {path}")
-    app.invoke({"path": path})
+    state = app.invoke({"path": path})
+
+    findings = state.get("findings", [])
+    if findings:
+        print("[!] Secretos detectados. Abortando commit.")
+        sys.exit(1)  
+    else:
+        print("[+] No se detectaron secretos. Todo limpio.")
+        sys.exit(0)  

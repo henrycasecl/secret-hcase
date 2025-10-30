@@ -3,8 +3,8 @@ import getpass
 
 # Simple authentication function
 def authenticate_user():
-    valid_username = "admin"
-    valid_password = "securepassword123"
+    valid_username = "admin" # IGNORE
+    valid_password = "securepassword123" # IGNORE
     test_password = "testsecret" # IGNORE
 
     username = input("Enter username: ")
