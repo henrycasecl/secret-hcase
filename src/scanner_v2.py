@@ -174,5 +174,5 @@ if __name__ == "__main__":
         print("[!] Secretos detectados. Abortando commit.")
         sys.exit(1)  
     else:
-        print("[+] No se detectaron secretos. Todo limpio.")
+        print("[+] Todo limpio, se realiza commit")
         sys.exit(0)  
