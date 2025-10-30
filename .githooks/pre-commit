@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "[+] Ejecutando escaneo de secretos antes del commit..."
+python3 src/scanner_v2.py
+if [ $? -ne 0 ]; then
+  echo "[!] Commit detenido: se detectaron posibles secretos."
+  exit 1
+fi

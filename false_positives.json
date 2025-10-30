@@ -1,0 +1,14 @@
+[{
+  "./db.py::admin",
+  "./db.py::testsecret",
+  "./.env::AKIAFAKEEXAMPLEKEY12345",
+  "./.env::FaKeSeCrEtAkEsTrInGxxxxxxxxxxxxxxxx",
+  "./client_mail.py::123momia2025",
+  "./scanner.py::http://192.168.1.125:11434",
+  "./src/db.py::securepassword123",
+  "./src/db.py::testsecret",
+  "./src/.env::AKIAFAKEEXAMPLEKEY12345",
+  "./src/.env::FaKeSeCrEtAkEsTrInGxxxxxxxxxxxxxxxx",
+  "./src/client_mail.py::fadmin@banco.com"
+}
+]
