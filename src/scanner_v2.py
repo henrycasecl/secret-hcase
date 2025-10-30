@@ -36,7 +36,7 @@ def ollama_generate(prompt, model="gpt-oss:20b"): # IGNORE
     return text.strip()
 
 # ---------------------------------------------------------------------
-# 🔹 Estado del grafo
+# Estado del grafo
 # ---------------------------------------------------------------------
 class ScanState(dict):
     files: list
@@ -44,7 +44,7 @@ class ScanState(dict):
     path: str
 
 # ---------------------------------------------------------------------
-# 🔹 Nodo 1: Lectura de archivos
+# Nodo 1: Lectura de archivos
 # ---------------------------------------------------------------------
 def node_read_files(state: ScanState):
     path = state.get("path", ".")
@@ -65,7 +65,7 @@ def node_read_files(state: ScanState):
     return state
 
 # ---------------------------------------------------------------------
-# 🔹 Nodo 2: Detección de secretos (con soporte # IGNORE)
+# Nodo 2: Detección de secretos (con soporte # IGNORE)
 # ---------------------------------------------------------------------
 def node_detect_secrets(state: ScanState):
     findings = []
